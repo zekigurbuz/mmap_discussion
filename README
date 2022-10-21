@@ -1,0 +1,36 @@
+We learned a lot about mmap in p6!
+How does our version of mmap differ from linux?
+
+The goal of this exercise is to
+
+    1. Become familiar with using mmap on a real system
+    2. Run some experiments!
+
+Task 1:
+Let's start with populate.cpp.
+In class we implemented demand paging. We never read in any data unless we page
+fault at that address. This was a design decision, we could have read in the
+entire file when mmap was called. This has a number of benefits, especially if
+some of the data is never read. It turns out this might not always be the
+behavior you want.
+
+Implement populate.cpp
+./populate with no arguments should mmap a file using demand paging
+./populate with any additional arguments should not demand page, but instead
+read everything into memory when mmap is called.
+
+After calling mmap, write a benchmark which performs worse with demand paging
+than with all-at-once paging.
+
+Task 2:
+Moving on to huge.cpp
+On the previous quiz we considered some tradeoffs between small and large page
+sizes. Now let's see how these tradeoffs play out in the real world!
+
+implement huge.cpp
+./populate with no arguments should mmap a region using 4k pages
+./populate with any additional arguments should mmap a region using 2MB pages.
+
+After calling mmap, write a benchmark which performs better with huge pages
+than with 4k pages.
+
