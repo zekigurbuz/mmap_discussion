@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 
 int main(int argc, char** argv){
     std::chrono::time_point<std::chrono::system_clock> start, end;
@@ -21,19 +22,24 @@ int main(int argc, char** argv){
     // read / write / mmap
 
     int fd = open("data", O_RDWR);
+	struct stat st;
+	stat("data", &st);
+	int sz = st.st_size;
 
     void* addr;
+
+//      mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 
     // easy / hacky way to pass cmdline args
     if (argc == 1){
         // do demand paging if no additional args
         printf("Demand paging\n");
-        addr = 0; // TODO
+		addr = mmap(nullptr, sz, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
     }
     else{
         // load all at once if additional args
         printf("Map populate\n");
-        addr = 0; // TODO 
+		addr = mmap(nullptr, sz, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_POPULATE, fd, 0);
     }
 
     // Always check your return values!
@@ -42,6 +48,10 @@ int main(int argc, char** argv){
     }
 
     // TODO: run benchmark here
+	for (int i = 0; i < sz; i += 4096) {
+	//for (int i = 0; i < sz; i++) {
+		auto z = *((char*)addr+i);
+	}
 
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
@@ -52,4 +62,3 @@ int main(int argc, char** argv){
     std::cout << "finished computation at " << std::ctime(&end_time) << "elapsed time: " << elapsed_seconds.count() << "s\n";
     munmap(addr, 1);
 }
-
