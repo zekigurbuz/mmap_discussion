@@ -1,6 +1,21 @@
+- Group members:
+	Nicolas Hsu, Zeki Gurbuz, Emily Sturman, Cole Tramel, Gavin Wang
+
 - How did you design your benchmarks?
 
+For populate, we just made a very large file to make a test that was slower without demand paging.
+
+We then made a normal sized file and then accessed each page in the file to cause a bunch of page faults to make a test that was slower with demand paging.
+
+For huge, we looped over a chunk of memory in increments of the smaller page size and then wrote to each address.
+
 - What performance differences did you see?
+
+For populate, we noticed that on very large files, using demand paging was much faster.
+
+However, we also noticed that accessing every page one at a time was way slower with demand paging.
+
+For huge, we noticed a speedup using larger pages since we didn't need to pull in as many pages each time.
 
 - If you have time / interest, lets try to look at what exactly caused these
 performance differences above. Our hardware has special performance counters
